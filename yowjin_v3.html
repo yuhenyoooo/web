@@ -184,9 +184,9 @@
 	border: 1px solid rgba(0, 191, 255, 0.3);
 	border-radius: 10px;
 	box-shadow: 0 0 12px rgba(0, 191, 255, 0.1);
-	font-family: 'Consolas', monospace;
+	font-family: 'Calibri', monospace;
 	font-style: italic;
-	font-size: 0.1rem;
+	font-size: 0.4rem;
 	opacity: 0.95;
 
 
@@ -215,7 +215,7 @@
       list-style: none;
       padding-left: 0;
       line-height: 1.4;
-      font-size: 0.8rem;
+      font-size: 0.95rem;
       margin: 0;
     }
 
@@ -383,7 +383,7 @@
 	cursor: pointer;
 	}
 
-	#btn-work, #btn-house, #btn-expense {
+	#btn-work, #btn-house, #btn-expense, #btn-lifelog {
 	position: relative;
 	z-index: 2;
 	font-family: 'Consolas', monospace;
@@ -401,7 +401,8 @@
 	
 	#btn-work:hover,
 	#btn-house:hover,
-	#btn-expense:hover {
+	#btn-expense:hover,
+	#btn-lifelog:hover {
 	transform: translateY(-2px);
 	box-shadow: 4px 4px 0 #003060;
 	background: linear-gradient(to bottom, #2c5dad, #1b2d5c);
@@ -422,6 +423,22 @@
 
   </style>
 </head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -479,6 +496,7 @@
 	<button id="btn-work">Work Tasks</button>
 	<button id="btn-house">House Tasks</button>
 	<button id="btn-expense">Expense</button>
+	<button id="btn-lifelog">Life Log</button>
 	</div>
 	
 	<!-- Work Tasks Modal -->
@@ -495,6 +513,7 @@
 		</select>
 		<button onclick="addTask('work')">Add Task</button>
 		<ul id="workTaskList"></ul>
+		<button onclick="saveTasksToToday('work')">💾</button>
 		<button onclick="togglePreviousTasks('work')">View Previous Tasks</button>
 		<div id="workPreviousTasks" style="display: none;"></div>
 		</div>
@@ -515,6 +534,7 @@
 		</select>
 		<button onclick="addTask('house')">Add Task</button>
 		<ul id="houseTaskList"></ul>
+		<button onclick="saveTasksToToday('house')">💾</button>
 		<button onclick="togglePreviousTasks('house')">View Previous Tasks</button>
 		<div id="housePreviousTasks" style="display: none;"></div>
 		</div>
@@ -535,7 +555,33 @@
 		</div>
 	</div>
 	</div>
+	
+	<!-- Lifelog Modal -->
+	<div class="modal" id="lifelog-modal">
+	<div class="modal-content">
+	<div class="modal-inner">
+		<span class="close" onclick="document.getElementById('lifelog-modal').style.display='none'">&times;</span>
+		<h2>Life Log Entry</h2>
+		<input type="text" id="lifelog-input" placeholder="e.g., Haircut" />
+		<input type="date" id="lifelog-date" />
+		<button id="lifelog-save">Save</button>
+		<div id="lifelog-list" style="margin-top: 15px;"></div>
+	</div>
+	</div>
+	</div>
 
+
+
+	<section class="gratitude-section">
+	<h2>Today I'm grateful for...</h2>
+	<p class="gratitude-reminder">Give 3 small gratitudes by the end of the day ✨</p>
+	<div class="gratitude-input">
+		<input type="text" id="gratitude-entry" placeholder="Something simple or profound..." />
+		<button onclick="addGratitude()">Add</button>
+	</div>
+	<ul id="gratitude-list"></ul>
+	<div id="previous-entries"></div>
+	</section>
 
 
 
@@ -564,18 +610,41 @@
     </div>
   </section>
 
-	<section class="gratitude-section">
-	<h2>Today I'm grateful for...</h2>
-	<p class="gratitude-reminder">Give 3 small gratitudes by the end of the day ✨</p>
-	<div class="gratitude-input">
-		<input type="text" id="gratitude-entry" placeholder="Something simple or profound..." />
-		<button onclick="addGratitude()">Add</button>
-	</div>
-	<ul id="gratitude-list"></ul>
-	<div id="previous-entries"></div>
-	</section>
-
   <footer>&copy; 2025 Eugene Filomeno</footer>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -611,33 +680,53 @@
     showPrevious(entries);
   });
 
-  function addGratitude() {
-    const entryText = entryInput.value.trim();
-    if (entryText) {
-      const entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
-      const today = new Date().toDateString();
-      const todaysEntries = entries.filter(e => new Date(e.time).toDateString() === today);
+	function addGratitude() {
+	const entryText = entryInput.value.trim();
+	if (!entryText) return;
+	
+	const entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	const today = new Date().toDateString();
+	const todaysEntries = entries.filter(e => new Date(e.time).toDateString() === today);
+	
+	if (todaysEntries.length >= 3) {
+		alert("You've already added 3 gratitude entries today. Come back tomorrow!");
+		return;
+	}
+	
+	const timestamp = new Date().toLocaleString();
+	const entry = { text: entryText, time: timestamp };
+	entries.push(entry);
+	localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
+	
+	entryInput.value = "";
+	
+	const updatedToday = [...todaysEntries, entry];
+	const lockDelete = updatedToday.length >= 3;
+	
+	// Clear and re-render only today’s entries
+	gratitudeList.innerHTML = "";
+	updatedToday.forEach(e => {
+		addListItem(e, lockDelete);
+	});
+	
+	showPrevious(entries);
+	
+	if (lockDelete) {
+		alert("You’ve completed 3 entries for today. Thank you!");
+		// Optionally disable the input if you want:
+		// entryInput.disabled = true;
+	}
+	}
 
-      if (todaysEntries.length >= 3) {
-        alert("You've already added 3 gratitude entries today. Come back tomorrow!");
-        return;
-      }
 
-      const timestamp = new Date().toLocaleString();
-      const entry = { text: entryText, time: timestamp };
-      addListItem(entry);
-      saveEntry(entry);
-      entryInput.value = "";
-      showPrevious([...todaysEntries, entry]);
-    }
-  }
 
-  function addListItem(entry) {
-    const li = document.createElement("li");
-    li.innerHTML = `<span>${entry.text} <small style="opacity: 0.6; font-size: 0.75rem;">(${entry.time})</small></span>
-                    <button class="delete" onclick="deleteEntry(this)">✖</button>`;
-    gratitudeList.appendChild(li);
-  }
+	function addListItem(entry, lockDelete = false) {
+	const li = document.createElement("li");
+	li.innerHTML = `<span>${entry.text} <small style="opacity: 0.6; font-size: 0.75rem;">(${entry.time})</small></span>` +
+					(lockDelete ? '' : `<button class="delete" onclick="deleteEntry(this)">✖</button>`);
+	gratitudeList.appendChild(li);
+	}
+
 
   function saveEntry(entry) {
     const entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
@@ -645,24 +734,46 @@
     localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
   }
 
-  function deleteEntry(button) {
-    const li = button.parentElement;
-    const text = li.querySelector("span").innerText;
-    li.remove();
-    let entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
-    entries = entries.filter(e => `${e.text} (${e.time})` !== text);
-    localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
-    showPrevious(entries);
-  }
+	function deleteEntry(button) {
+	const li = button.parentElement;
+	const text = li.querySelector("span").innerText;
+	li.remove();
+	
+	// Remove entry from storage
+	let entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	entries = entries.filter(e => `${e.text} (${e.time})` !== text);
+	localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
+	
+	// 🔁 Reload entries from localStorage and re-show recent
+	const updatedEntries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	showPrevious(updatedEntries);
+	}
 
-  function showPrevious(entries) {
-    if (!entries.length) {
-      previousEntriesBox.innerHTML = "";
-      return;
-    }
-    const recent = entries.slice(-9).map(e => `• ${e.text} (${e.time})`).reverse();
-    previousEntriesBox.innerHTML = "<strong>Recent Entries:</strong><br>" + recent.join("<br>");
-  }
+
+	function showPrevious(allEntries) {
+	if (!allEntries.length) {
+		previousEntriesBox.innerHTML = "";
+		return;
+	}
+	
+	// Filter entries from the last 7 days
+	const oneWeekAgo = new Date();
+	oneWeekAgo.setDate(oneWeekAgo.getDate() - 6); // includes today
+	
+	const recentEntries = allEntries
+		.filter(e => new Date(e.time) >= oneWeekAgo)
+		.sort((a, b) => new Date(b.time) - new Date(a.time)) // newest first
+		.slice(0, 9); // only latest 9 entries
+	
+	if (!recentEntries.length) {
+		previousEntriesBox.innerHTML = "<p>No recent entries from the past week.</p>";
+		return;
+	}
+	
+	const formatted = recentEntries.map(e => `• ${e.text} (${e.time})`);
+	previousEntriesBox.innerHTML = "<strong>Recent Entries (Past 7 Days):</strong><br>" + formatted.join("<br>");
+	}
+
   </script>
   
   <script>
@@ -701,6 +812,7 @@
 	if (id === 'workTasksModal') loadTasks('work');
 	if (id === 'houseTasksModal') loadTasks('house');
 	if (id === 'expenseModal') loadExpenses();
+	if (id === 'lifelog-modal') loadLifeLog();
 	}
 	
 	function closeModal(id) {
@@ -763,6 +875,35 @@
 	});
 	}
 	
+	function saveTasksToToday(type) {
+	const taskList = document.querySelectorAll(`#${type}TaskList li`);
+	const todayKey = `${type}_tasks_${new Date().toISOString().split('T')[0]}`;
+	
+	// Load current saved tasks
+	const existing = JSON.parse(localStorage.getItem(todayKey) || "[]");
+	
+	taskList.forEach(item => {
+		const taskText = item.querySelector("span").textContent.trim();
+		const status = item.querySelector("select").value;
+	
+		// Look for exact match (trimmed)
+		const index = existing.findIndex(t => t.task.trim() === taskText);
+	
+		if (index !== -1) {
+		// Overwrite status
+		existing[index].status = status;
+		} else {
+		// New task, add it
+		existing.push({ task: taskText, status });
+		}
+	});
+	
+	localStorage.setItem(todayKey, JSON.stringify(existing));
+	alert(`Saved and updated ${type} tasks for today.`);
+	}
+
+
+	
 	function updateTaskStatus(type, index, newStatus) {
 	const key = getTodayKey(type);
 	let tasks = JSON.parse(localStorage.getItem(key));
@@ -785,7 +926,7 @@
 	
 	if (container.innerHTML === '') {
 		let html = '';
-		for (let i = 1; i <= 7; i++) {
+		for (let i = 0; i <= 7; i++) { // Include today (i = 0)
 		const date = new Date();
 		date.setDate(date.getDate() - i);
 		const key = `${type}_tasks_${date.toISOString().split('T')[0]}`;
@@ -802,6 +943,7 @@
 		container.innerHTML = html || '<p>No previous tasks found.</p>';
 	}
 	}
+
 	
 	// Expense logic
 	function addExpense() {
@@ -859,11 +1001,13 @@
 	const btnWork = document.getElementById("btn-work");
 	const btnHouse = document.getElementById("btn-house");
 	const btnExpense = document.getElementById("btn-expense");
+	const btnLifeLog = document.getElementById("btn-lifelog");
 	
-	if (btnWork && btnHouse && btnExpense) {
+	if (btnWork && btnHouse && btnExpense && btnLifeLog) {
 	btnWork.onclick = () => openModal('workTasksModal');
 	btnHouse.onclick = () => openModal('houseTasksModal');
 	btnExpense.onclick = () => openModal('expenseModal');
+	btnLifeLog.onclick = () => openModal('lifelog-modal');
 	} else {
 	console.error("Buttons not found in DOM. Check IDs or script placement.");
 	}
@@ -886,6 +1030,136 @@
 	}
 	</script>
 	
+	<script>
+	document.addEventListener("DOMContentLoaded", () => {
+	carryOverTasks('work');
+	carryOverTasks('house');
+	});
+	
+	function carryOverTasks(type) {
+	const todayKey = getTodayKey(type);
+	
+	// Get today's tasks (if any)
+	const todayTasks = JSON.parse(localStorage.getItem(todayKey)) || [];
+	
+	// Look at yesterday's tasks
+	const yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	const yesterdayKey = `${type}_tasks_${yesterday.toISOString().split('T')[0]}`;
+	const oldTasks = JSON.parse(localStorage.getItem(yesterdayKey)) || [];
+	
+	const unfinished = oldTasks.filter(t => t.status !== "Completed");
+	
+	// Avoid duplicates: Only add if not in today's task list
+	const updatedTasks = [...todayTasks];
+	
+	unfinished.forEach(t => {
+		const alreadyExists = todayTasks.some(existing => existing.task === t.task && existing.status === t.status);
+		if (!alreadyExists) updatedTasks.push(t);
+	});
+	
+	// Save merged tasks to today's key
+	localStorage.setItem(todayKey, JSON.stringify(updatedTasks));
+	}
+	</script>
+	
+	<script>
+	setInterval(() => {
+		location.reload();
+	}, 60000); // 
+	</script>
+
+	</script>
+	window.onload = () => {
+	const today = new Date().toDateString(); // For gratitude
+	const todayISO = new Date().toISOString().split("T")[0]; // For work, house, and expense
+	
+	// === WORK TASKS ===
+	const savedWorkTasks = JSON.parse(localStorage.getItem(`work_tasks_${todayISO}`)) || [];
+	savedWorkTasks.forEach(task => displayTask('work', task));
+	
+	// === HOUSE TASKS ===
+	const savedHouseTasks = JSON.parse(localStorage.getItem(`house_tasks_${todayISO}`)) || [];
+	savedHouseTasks.forEach(task => displayTask('house', task));
+	
+	// === EXPENSE ITEMS ===
+	const savedExpenses = JSON.parse(localStorage.getItem(`expense_tasks_${todayISO}`)) || [];
+	savedExpenses.forEach(task => displayTask('expense', task));
+	
+	// === GRATITUDE ENTRIES ===
+	const allGratitude = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	const todaysEntries = allGratitude.filter(e => new Date(e.time).toDateString() === today);
+	todaysEntries.forEach(entry => addListItem(entry)); // Render visible list
+	showPrevious(allGratitude); // Show 9 most recent from past 7 days
+	
+	// === LIFE LOG ENTRIES ===
+	renderLifeLog(); // ✅ Now added
+	};
+
+	</script>
+	
+
+	// === Life Log Modal ===
+	<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const btnLifeLog = document.getElementById('btn-lifelog');
+		const lifeLogModal = document.getElementById('lifelog-modal');
+		const lifeLogInput = document.getElementById('lifelog-input');
+		const lifeLogDate = document.getElementById('lifelog-date');
+		const lifeLogSave = document.getElementById('lifelog-save');
+		const lifeLogList = document.getElementById('lifelog-list');
+	
+		// Save button
+		lifeLogSave.addEventListener('click', () => {
+			const desc = lifeLogInput.value.trim();
+			const date = lifeLogDate.value;
+	
+			if (!desc || !date) return;
+	
+			const entries = JSON.parse(localStorage.getItem('lifeLog') || '[]');
+			entries.push({ desc, date });
+			localStorage.setItem('lifeLog', JSON.stringify(entries));
+			lifeLogInput.value = '';
+			lifeLogDate.value = '';
+			renderLifeLog();
+		});
+	
+		// Render entries
+		function renderLifeLog() {
+			const entries = JSON.parse(localStorage.getItem('lifeLog') || '[]');
+			lifeLogList.innerHTML = entries.map((entry, i) => {
+				const daysAgo = Math.floor((Date.now() - new Date(entry.date)) / (1000 * 60 * 60 * 24));
+				return `
+					<div style="margin-bottom: 10px;">
+						<strong>${entry.desc}</strong> — ${entry.date} (${daysAgo} days ago)
+						<button onclick="deleteLifeLog(${i})">✖</button>
+					</div>
+				`;
+			}).join('');
+		}
+	
+		// Expose delete function globally
+		window.deleteLifeLog = function(index) {
+			const entries = JSON.parse(localStorage.getItem('lifeLog') || '[]');
+			entries.splice(index, 1);
+			localStorage.setItem('lifeLog', JSON.stringify(entries));
+			renderLifeLog();
+		};
+	
+		// Close modal on outside click
+		window.addEventListener('click', (e) => {
+			if (e.target === lifeLogModal) {
+				lifeLogModal.style.display = 'none';
+			}
+		});
+	
+		// Initial render when modal is opened
+		window.loadLifeLog = renderLifeLog;
+	});
+	</script>
+
+
+
 
 </body>
 </html>
