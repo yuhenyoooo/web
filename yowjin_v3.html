@@ -1069,38 +1069,37 @@
 	}, 60000); // 
 	</script>
 
-	</script>
-	window.onload = () => {
-	const today = new Date().toDateString(); // For gratitude
-	const todayISO = new Date().toISOString().split("T")[0]; // For work, house, and expense
-	
-	// === WORK TASKS ===
-	const savedWorkTasks = JSON.parse(localStorage.getItem(`work_tasks_${todayISO}`)) || [];
-	savedWorkTasks.forEach(task => displayTask('work', task));
-	
-	// === HOUSE TASKS ===
-	const savedHouseTasks = JSON.parse(localStorage.getItem(`house_tasks_${todayISO}`)) || [];
-	savedHouseTasks.forEach(task => displayTask('house', task));
-	
-	// === EXPENSE ITEMS ===
-	const savedExpenses = JSON.parse(localStorage.getItem(`expense_tasks_${todayISO}`)) || [];
-	savedExpenses.forEach(task => displayTask('expense', task));
-	
-	// === GRATITUDE ENTRIES ===
-	const allGratitude = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
-	const todaysEntries = allGratitude.filter(e => new Date(e.time).toDateString() === today);
-	todaysEntries.forEach(entry => addListItem(entry)); // Render visible list
-	showPrevious(allGratitude); // Show 9 most recent from past 7 days
-	
-	// === LIFE LOG ENTRIES ===
-	renderLifeLog(); // ✅ Now added
-	};
-
-	</script>
-	
-
-	// === Life Log Modal ===
 	<script>
+		window.onload = () => {
+		const today = new Date().toDateString(); // For gratitude
+		const todayISO = new Date().toISOString().split("T")[0]; // For work, house, and expense
+		
+		// === WORK TASKS ===
+		const savedWorkTasks = JSON.parse(localStorage.getItem(`work_tasks_${todayISO}`)) || [];
+		savedWorkTasks.forEach(task => displayTask('work', task));
+		
+		// === HOUSE TASKS ===
+		const savedHouseTasks = JSON.parse(localStorage.getItem(`house_tasks_${todayISO}`)) || [];
+		savedHouseTasks.forEach(task => displayTask('house', task));
+		
+		// === EXPENSE ITEMS ===
+		const savedExpenses = JSON.parse(localStorage.getItem(`expense_tasks_${todayISO}`)) || [];
+		savedExpenses.forEach(task => displayTask('expense', task));
+		
+		// === GRATITUDE ENTRIES ===
+		const allGratitude = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+		const todaysEntries = allGratitude.filter(e => new Date(e.time).toDateString() === today);
+		todaysEntries.forEach(entry => addListItem(entry)); // Render visible list
+		showPrevious(allGratitude); // Show 9 most recent from past 7 days
+		
+		// === LIFE LOG ENTRIES ===
+		renderLifeLog(); // ✅ Now added
+		};
+
+	</script>
+	
+	<script>
+	// === Life Log Modal ===
 	document.addEventListener("DOMContentLoaded", () => {
 		const btnLifeLog = document.getElementById('btn-lifelog');
 		const lifeLogModal = document.getElementById('lifelog-modal');
