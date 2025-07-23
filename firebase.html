@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Yowjin</title>
+  <style>
+    :root {
+      --bg-overlay: rgba(5, 15, 30, 0.8);
+      --text-color: #e0e0e0;
+      --accent-color: #00bfff;
+      --button-bg: #102840;
+      --button-text: #e0e0e0;
+    }
+
+    .light-mode {
+      --bg-overlay: rgba(230, 230, 230, 0.65);
+      --text-color: #2b2b2b;
+      --accent-color: #006080;
+      --button-bg: #d9d9d9;
+      --button-text: #1a1a1a;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://media.istockphoto.com/id/1320010974/photo/technology-connection-digital-data-and-big-data-concept.jpg?s=612x612&w=0&k=20&c=wEJ1liqlHK38B-IYOuM-Bern8bA1vc1iB2TxvFi0V-I=') no-repeat center center/cover;
+      min-height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--bg-overlay);
+      z-index: 0;
+      transition: background 0.3s ease;
+    }
+
+    h1 {
+      font-size: 4.2rem;
+      font-weight: 900;
+      margin: 100px 0 0;
+      color: var(--text-color);
+      font-family: 'Consolas', monospace;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+      z-index: 2;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 10px 0 30px;
+      font-weight: 400;
+      color: var(--text-color);
+      z-index: 2;
+    }
+
+    .about {
+      max-width: 700px;
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.6;
+      padding: 0 20px;
+      color: var(--text-color);
+      z-index: 2;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      z-index: 2;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .buttons a {
+      text-decoration: none;
+      color: var(--button-text);
+      background: var(--button-bg);
+      border: 2px solid var(--accent-color);
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .buttons a:hover {
+      background-color: var(--accent-color);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .media-section {
+      width: 100%;
+      padding: 60px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(10, 10, 10, 0.6);
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+
+    .media-section h2 {
+      color: var(--text-color);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .gallery img {
+      width: 270px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin: 40px 0 20px;
+      font-size: 0.8rem;
+      color: var(--text-color);
+      z-index: 2;
+      text-align: center;
+    }
+
+    #toggle-mode {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: 2px solid var(--accent-color);
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+	
+	#digital-clock {
+		position: fixed;
+		top: 20px;
+		right: 100px; /* leave space from toggle-mode */
+		padding: 6px 12px;
+		background: rgba(0, 0, 0, 0.4);
+		color: var(--text-color);
+		border: 1px solid var(--accent-color);
+		border-radius: 6px;
+		font-family: 'Consolas', monospace;
+		font-size: 1rem;
+		z-index: 999;
+		backdrop-filter: blur(4px);
+	}
+
+	.quirks-section {
+	width: 100%;
+	max-width: 800px;
+	margin: 40px auto;
+	padding: 24px;
+	background: rgba(25, 25, 25, 0.5);
+	border: 1px solid rgba(0, 191, 255, 0.3);
+	border-radius: 10px;
+	box-shadow: 0 0 12px rgba(0, 191, 255, 0.1);
+	font-family: 'Calibri', monospace;
+	font-style: italic;
+	font-size: 0.4rem;
+	opacity: 0.95;
+
+
+    }
+
+    .quirks-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+	.quirks-container .quirks-box:first-child {
+	padding-left: 20px;
+    }
+	
+    .quirks-box h2 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: var(--text-color);
+      text-align: left;
+    }
+
+    .quirks-box ul {
+      list-style: none;
+      padding-left: 0;
+      line-height: 1.4;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .quirks-box li {
+      margin-bottom: 6px;
+      text-align: left;
+    }
+	
+
+	.gratitude-section {
+	width: 100%;
+	max-width: 600px;
+	margin: 40px auto;
+	padding: 16px;
+	background: rgba(180, 180, 180, 0.3);
+	backdrop-filter: blur(3px);
+	border-radius: 8px;
+	text-align: center;
+	color: var(--text-color);
+	z-index: 2;
+	font-family: 'Consolas', monospace;
+	font-size: 0.9rem;
+	}
+	
+	.gratitude-reminder {
+	font-size: 0.8rem;
+	margin-top: -10px;
+	margin-bottom: 10px;
+	opacity: 0.75;
+	font-style: italic;
+	}
+	
+	.gratitude-input {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 15px;
+	}
+	
+	.gratitude-input input {
+	padding: 8px;
+	width: 100%;
+	max-width: 400px;
+	border-radius: 5px;
+	border: 1px solid var(--accent-color);
+	font-size: 0.9rem;
+	font-family: 'Consolas', monospace;
+	}
+	
+	.gratitude-input button {
+	background: var(--accent-color);
+	color: #fff;
+	border: none;
+	padding: 6px 14px;
+	font-size: 0.9rem;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background 0.3s ease;
+	font-family: 'Consolas', monospace;
+	}
+	
+	.gratitude-input button:hover {
+	background: #009acd;
+	}
+	
+	#gratitude-list {
+	list-style: none;
+	padding-left: 0;
+	margin-top: 10px;
+	text-align: left;
+	font-size: 0.85rem;
+	font-family: 'Consolas', monospace;
+	}
+	
+	#gratitude-list li {
+	margin-bottom: 6px;
+	padding: 6px 10px;
+	border-left: 3px solid var(--accent-color);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 4px;
+	}
+	
+	#gratitude-list button.delete {
+	background: none;
+	border: none;
+	color: #f55;
+	font-size: 0.8rem;
+	cursor: pointer;
+	margin-left: 10px;
+	font-family: 'Consolas', monospace;
+	}
+	
+	#previous-entries {
+	font-size: 0.75rem;
+	margin-top: 30px;
+	padding: 8px;
+	border-top: 1px dashed var(--accent-color);
+	opacity: 0.7;
+	max-height: 100px;
+	overflow-y: auto;
+	text-align: left;
+	font-family: 'Consolas', monospace;
+	}
+	
+	.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.7);
+	justify-content: center;
+	align-items: center;
+	}
+	
+	.modal-content {
+	 background: url('https://static.vecteezy.com/system/resources/previews/037/209/987/non_2x/digital-technology-futuristic-internet-network-connection-dark-black-background-blue-abstract-cyber-information-communication-ai-big-data-science-innovation-future-tech-line-illustration-3d-free-vector.jpg') no-repeat center center;
+	 background-size: cover;
+	 color: var(--text-color);
+	 margin: 10% auto;
+	 padding: 0;
+	 border: 1px solid #aaa;
+	 width: 90%;
+	 max-width: 500px;
+	 border-radius: 10px;
+	 font-family: 'Consolas', monospace;
+	 font-size: 0.9rem;
+	 position: relative;
+     overflow: hidden;
+	}
+	
+	.modal input, .modal select {
+	width: 80;
+	padding: 6px;
+	margin-top: 6px;
+	margin-bottom: 6px;
+	border-radius: 4px;
+	border: 1px solid var(--accent-color);
+	font-family: 'Consolas', monospace;
+	font-size: 0.7rem;
+	}
+	
+	#workTaskList li, #houseTaskList li {
+	margin-bottom: 6px;
+	font-size: 0.85rem;
+	line-height: 1.3;
+	}
+	
+	.modal button {
+	padding: 6px 10px;
+	font-size: 0.85rem;
+	font-family: 'Consolas', monospace;
+	}
+	
+	.close {
+	float: right;
+	font-size: 24px;
+	cursor: pointer;
+	}
+
+	#btn-work, #btn-house, #btn-expense, #btn-lifelog {
+	position: relative;
+	z-index: 2;
+	font-family: 'Consolas', monospace;
+	font-size: 1rem; /* ~20% bigger */
+	padding: 12px 24px;
+	margin: 12px;
+	background: linear-gradient(to bottom, #142850, #0a1a3c);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	box-shadow: 3px 3px 0 #004080;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	}
+	
+	#btn-work:hover,
+	#btn-house:hover,
+	#btn-expense:hover,
+	#btn-lifelog:hover {
+	transform: translateY(-2px);
+	box-shadow: 4px 4px 0 #003060;
+	background: linear-gradient(to bottom, #2c5dad, #1b2d5c);
+	}
+	
+	.modal {
+	z-index: 1000; /* Make sure modal overlays buttons */
+	}
+
+	.modal-inner {
+	background: rgba(0, 0, 0, 0.7);
+	padding: 20px;
+	border-radius: 10px;
+	height: 100%;
+	width: 100%;
+	box-sizing: border-box;
+	}
+
+  </style>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+  <div class="overlay"></div>
+  <button id="toggle-mode">🌙</button>
+
+  <h1>Engr. Eugene L. Filomeno</h1>
+  <h2>Network Engineer, CCNP</h2>
+  
+  <div id="digital-clock"></div>
+
+  <div class="buttons">
+    <a href="https://www.linkedin.com/in/eugene-filomeno-31733a1b4" target="_blank">LinkedIn</a>
+    <a href="https://www.instagram.com/yuhenyoooo" target="_blank">Instagram</a>
+    <a href="https://www.facebook.com/yuhenyoooo" target="_blank">Facebook</a>
+    <a href="https://drive.google.com/file/d/1l6zQtACSBYdtU6XJSYjHSx8ONBUQli7C/view?usp=sharing" target="_blank">CV</a>
+  </div>
+
+  <p class="about">
+    <br><br>
+    A fur dad to three chaotic dogs who basically think they run the house. 🐾<br>
+    Drawn to open roads, unexpected turns, and the freedom to wander.<br>
+    Perfectly flawed — navigating each day with gentle drive and quiet confidence.
+  </p>
+
+  <section class="media-section">
+    <h2>Media</h2>
+    <div class="gallery">
+      <img src="https://i.imgur.com/VrAesDj.jpeg" alt="Sample 1">
+      <img src="https://i.imgur.com/brbJgzq.jpeg" alt="Sample 2">
+      <img src="https://i.imgur.com/ilDioMa.jpeg" alt="Sample 3">
+      <img src="https://i.imgur.com/2i2e6rK.jpeg" alt="Sample 4">
+	  <img src="https://i.imgur.com/JwvS3fM.jpeg" alt="Sample 5">
+	  
+    </div>
+  </section>
+  
+  
+
+	
+	<!-- Buttons for Popups -->
+	<div style="text-align: center; margin-top: 2rem;">
+	<button id="btn-work">Work Tasks</button>
+	<button id="btn-house">House Tasks</button>
+	<button id="btn-expense">Expense</button>
+	<button id="btn-lifelog">Life Log</button>
+	</div>
+	
+	<!-- Work Tasks Modal -->
+	<div id="workTasksModal" class="modal">
+	<div class="modal-content">
+		<div class="modal-inner">
+		<span class="close" onclick="closeModal('workTasksModal')">&times;</span>
+		<h2>Work Tasks</h2>
+		<input type="text" id="workTaskInput" placeholder="Enter task">
+		<select id="workTaskStatus">
+		<option>Not Started</option>
+		<option>In Progress</option>
+		<option>Completed</option>
+		</select>
+		<button onclick="addTask('work')">Add Task</button>
+		<ul id="workTaskList"></ul>
+		<button onclick="saveTasksToToday('work')">💾</button>
+		<button onclick="togglePreviousTasks('work')">View Previous Tasks</button>
+		<div id="workPreviousTasks" style="display: none;"></div>
+		</div>
+	</div>
+	</div>
+	
+	<!-- House Tasks Modal -->
+	<div id="houseTasksModal" class="modal">
+	<div class="modal-content">
+	<div class="modal-inner">
+		<span class="close" onclick="closeModal('houseTasksModal')">&times;</span>
+		<h2>House Tasks</h2>
+		<input type="text" id="houseTaskInput" placeholder="Enter task">
+		<select id="houseTaskStatus">
+		<option>Not Started</option>
+		<option>In Progress</option>
+		<option>Completed</option>
+		</select>
+		<button onclick="addTask('house')">Add Task</button>
+		<ul id="houseTaskList"></ul>
+		<button onclick="saveTasksToToday('house')">💾</button>
+		<button onclick="togglePreviousTasks('house')">View Previous Tasks</button>
+		<div id="housePreviousTasks" style="display: none;"></div>
+		</div>
+	</div>
+	</div>
+	
+	<!-- Expense Modal -->
+	<div id="expenseModal" class="modal">
+	<div class="modal-content">
+	<div class="modal-inner">
+		<span class="close" onclick="closeModal('expenseModal')">&times;</span>
+		<h2>Expense Tracker</h2>
+		<input type="text" id="expenseDesc" placeholder="Description">
+		<input type="number" id="expenseAmount" placeholder="Amount">
+		<button onclick="addExpense()">Add Expense</button>
+		<ul id="expenseList"></ul>
+		<h3>Total: ₱<span id="expenseTotal">0.00</span></h3>
+		</div>
+	</div>
+	</div>
+	
+	<!-- Lifelog Modal -->
+	<div class="modal" id="lifelog-modal">
+	<div class="modal-content">
+	<div class="modal-inner">
+		<span class="close" onclick="document.getElementById('lifelog-modal').style.display='none'">&times;</span>
+		<h2>Life Log Entry</h2>
+		<input type="text" id="lifelog-input" placeholder="e.g., Haircut" />
+		<input type="date" id="lifelog-date" />
+		<button id="lifelog-save">Save</button>
+		<div id="lifelog-list" style="margin-top: 15px;"></div>
+	</div>
+	</div>
+	</div>
+
+
+
+	<section class="gratitude-section">
+	<h2>Today I'm grateful for...</h2>
+	<p class="gratitude-reminder">Give 3 small gratitudes by the end of the day ✨</p>
+	<div class="gratitude-input">
+		<input type="text" id="gratitude-entry" placeholder="Something simple or profound..." />
+		<button onclick="addGratitude()">Add</button>
+	</div>
+	<ul id="gratitude-list"></ul>
+	<div id="previous-entries"></div>
+	</section>
+
+
+
+  <section class="quirks-section">
+    <div class="quirks-container">
+      <div class="quirks-box">
+        <h2>Pet Peeves</h2>
+        <ul>
+          <li>😤 Spoiled people with no sense of effort</li>
+          <li>🗯️ Loud entitlement </li>
+          <li>⛔ People who interrupt just to disagree</li>
+          <li>🎭 Overly dramatic replies to minor inconveniences</li>
+          <li>🧛‍♂️ Energy vampires — always complaining, never growing</li>
+        </ul>
+      </div>
+      <div class="quirks-box">
+        <h2>Biggest Turn-ons</h2>
+        <ul>
+          <li>📈 Consistency — not just when it’s convenient</li>
+          <li>🎯 People who are goal-driven and quietly hungry</li>
+          <li>😎 Low-key confidence — no brag, just presence</li>
+          <li>🧠 Listens with intention, speaks with clarity</li>
+          <li>🔍 Genuine curiosity and the ability to sit with silence</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+
+  <footer>&copy; 2025 Eugene Filomeno</footer>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+  <script>
+    const toggleBtn = document.getElementById("toggle-mode");
+    const body = document.body;
+    let isDark = true;
+
+    toggleBtn.addEventListener("click", () => {
+      body.classList.toggle("light-mode");
+      isDark = !isDark;
+      toggleBtn.textContent = isDark ? "🌙" : "🌞";
+    });
+  </script>
+  
+  <script>
+
+  const gratitudeList = document.getElementById("gratitude-list");
+  const entryInput = document.getElementById("gratitude-entry");
+  const previousEntriesBox = document.getElementById("previous-entries");
+
+  // Load saved entries
+  document.addEventListener("DOMContentLoaded", () => {
+    const entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+    entries.forEach(addListItem);
+    showPrevious(entries);
+  });
+
+	function addGratitude() {
+	const entryText = entryInput.value.trim();
+	if (!entryText) return;
+	
+	const entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	const today = new Date().toDateString();
+	const todaysEntries = entries.filter(e => new Date(e.time).toDateString() === today);
+	
+	if (todaysEntries.length >= 3) {
+		alert("You've already added 3 gratitude entries today. Come back tomorrow!");
+		return;
+	}
+	
+	const timestamp = new Date().toLocaleString();
+	const entry = { text: entryText, time: timestamp };
+	entries.push(entry);
+	localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
+	
+	entryInput.value = "";
+	
+	const updatedToday = [...todaysEntries, entry];
+	const lockDelete = updatedToday.length >= 3;
+	
+	// Clear and re-render only today’s entries
+	gratitudeList.innerHTML = "";
+	updatedToday.forEach(e => {
+		addListItem(e, lockDelete);
+	});
+	
+	showPrevious(entries);
+	
+	if (lockDelete) {
+		alert("You’ve completed 3 entries for today. Thank you!");
+		// Optionally disable the input if you want:
+		// entryInput.disabled = true;
+	}
+	}
+
+
+
+	function addListItem(entry, lockDelete = false) {
+	const li = document.createElement("li");
+	li.innerHTML = `<span>${entry.text} <small style="opacity: 0.6; font-size: 0.75rem;">(${entry.time})</small></span>` +
+					(lockDelete ? '' : `<button class="delete" onclick="deleteEntry(this)">✖</button>`);
+	gratitudeList.appendChild(li);
+	}
+
+
+  function saveEntry(entry) {
+    const entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+    entries.push(entry);
+    localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
+  }
+
+	function deleteEntry(button) {
+	const li = button.parentElement;
+	const text = li.querySelector("span").innerText;
+	li.remove();
+	
+	// Remove entry from storage
+	let entries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	entries = entries.filter(e => `${e.text} (${e.time})` !== text);
+	localStorage.setItem("gratitudeEntries", JSON.stringify(entries));
+	
+	// 🔁 Reload entries from localStorage and re-show recent
+	const updatedEntries = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+	showPrevious(updatedEntries);
+	}
+
+
+	function showPrevious(allEntries) {
+	if (!allEntries.length) {
+		previousEntriesBox.innerHTML = "";
+		return;
+	}
+	
+	// Filter entries from the last 7 days
+	const oneWeekAgo = new Date();
+	oneWeekAgo.setDate(oneWeekAgo.getDate() - 6); // includes today
+	
+	const recentEntries = allEntries
+		.filter(e => new Date(e.time) >= oneWeekAgo)
+		.sort((a, b) => new Date(b.time) - new Date(a.time)) // newest first
+		.slice(0, 9); // only latest 9 entries
+	
+	if (!recentEntries.length) {
+		previousEntriesBox.innerHTML = "<p>No recent entries from the past week.</p>";
+		return;
+	}
+	
+	const formatted = recentEntries.map(e => `• ${e.text} (${e.time})`);
+	previousEntriesBox.innerHTML = "<strong>Recent Entries (Past 7 Days):</strong><br>" + formatted.join("<br>");
+	}
+
+  </script>
+  
+  <script>
+  function updateClock() {
+    const clock = document.getElementById("digital-clock");
+    const now = new Date();
+
+    const time = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    const date = now.toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    clock.textContent = `${time} | ${date}`;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
+
+	<script>
+	function getTodayKey(prefix) {
+	const today = new Date().toISOString().split('T')[0];
+	return `${prefix}_tasks_${today}`;
+	}
+	
+	function openModal(id) {
+	document.getElementById(id).style.display = "flex";
+	if (id === 'workTasksModal') loadTasks('work');
+	if (id === 'houseTasksModal') loadTasks('house');
+	if (id === 'expenseModal') loadExpenses();
+	if (id === 'lifelog-modal') loadLifeLog();
+	}
+	
+	function closeModal(id) {
+	document.getElementById(id).style.display = "none";
+	}
+	
+	// Task logic (Work & House)
+	function addTask(type) {
+	const input = document.getElementById(`${type}TaskInput`).value;
+	const status = document.getElementById(`${type}TaskStatus`).value;
+	const key = getTodayKey(type);
+	
+	let tasks = JSON.parse(localStorage.getItem(key)) || [];
+	tasks.push({ task: input, status });
+	localStorage.setItem(key, JSON.stringify(tasks));
+	document.getElementById(`${type}TaskInput`).value = '';
+	loadTasks(type);
+	}
+	
+	function loadTasks(type) {
+	const key = getTodayKey(type);
+	const tasks = JSON.parse(localStorage.getItem(key)) || [];
+	const list = document.getElementById(`${type}TaskList`);
+	list.innerHTML = '';
+	
+	tasks.forEach((t, i) => {
+		const li = document.createElement('li');
+		li.style.display = 'flex';
+		li.style.alignItems = 'center';
+		li.style.justifyContent = 'space-between';
+		li.style.gap = '10px';
+
+		const taskSpan = document.createElement('span');
+		taskSpan.textContent = t.task;
+		taskSpan.style.flexGrow = '1';
+
+		const select = document.createElement('select');
+		select.innerHTML = `
+		  <option${t.status === "Not Started" ? " selected" : ""}>Not Started</option>
+		  <option${t.status === "In Progress" ? " selected" : ""}>In Progress</option>
+		  <option${t.status === "Completed" ? " selected" : ""}>Completed</option>
+		`;
+		select.onchange = function () {
+		  updateTaskStatus(type, i, this.value);
+		  styleStatusDropdown(this);
+		};
+		styleStatusDropdown(select);
+
+		const deleteBtn = document.createElement('button');
+		deleteBtn.textContent = '✖';
+		deleteBtn.className = 'delete';
+		deleteBtn.onclick = () => deleteTask(type, i);
+
+		li.appendChild(taskSpan);
+		li.appendChild(select);
+		li.appendChild(deleteBtn);
+		list.appendChild(li);
+
+		list.appendChild(li);
+	});
+	}
+	
+	function saveTasksToToday(type) {
+	const taskList = document.querySelectorAll(`#${type}TaskList li`);
+	const todayKey = `${type}_tasks_${new Date().toISOString().split('T')[0]}`;
+	
+	// Load current saved tasks
+	const existing = JSON.parse(localStorage.getItem(todayKey) || "[]");
+	
+	taskList.forEach(item => {
+		const taskText = item.querySelector("span").textContent.trim();
+		const status = item.querySelector("select").value;
+	
+		// Look for exact match (trimmed)
+		const index = existing.findIndex(t => t.task.trim() === taskText);
+	
+		if (index !== -1) {
+		// Overwrite status
+		existing[index].status = status;
+		} else {
+		// New task, add it
+		existing.push({ task: taskText, status });
+		}
+	});
+	
+	localStorage.setItem(todayKey, JSON.stringify(existing));
+	alert(`Saved and updated ${type} tasks for today.`);
+	}
+
+
+	
+	function updateTaskStatus(type, index, newStatus) {
+	const key = getTodayKey(type);
+	let tasks = JSON.parse(localStorage.getItem(key));
+	tasks[index].status = newStatus;
+	localStorage.setItem(key, JSON.stringify(tasks));
+	}
+	
+	function deleteTask(type, index) {
+	const key = getTodayKey(type);
+	let tasks = JSON.parse(localStorage.getItem(key)) || [];
+	tasks.splice(index, 1);
+	localStorage.setItem(key, JSON.stringify(tasks));
+	loadTasks(type);
+	}
+
+	// Previous Tasks Viewer
+	function togglePreviousTasks(type) {
+	const container = document.getElementById(`${type}PreviousTasks`);
+	container.style.display = container.style.display === 'none' ? 'block' : 'none';
+	
+	if (container.innerHTML === '') {
+		let html = '';
+		for (let i = 0; i <= 7; i++) { // Include today (i = 0)
+		const date = new Date();
+		date.setDate(date.getDate() - i);
+		const key = `${type}_tasks_${date.toISOString().split('T')[0]}`;
+		const tasks = JSON.parse(localStorage.getItem(key)) || [];
+	
+		if (tasks.length) {
+			html += `<strong>${key.replace(`${type}_tasks_`, '')}</strong><ul>`;
+			tasks.forEach(t => {
+			html += `<li>${t.task} - ${t.status}</li>`;
+			});
+			html += '</ul>';
+		}
+		}
+		container.innerHTML = html || '<p>No previous tasks found.</p>';
+	}
+	}
+
+	
+	// Expense logic
+	function addExpense() {
+	const desc = document.getElementById('expenseDesc').value;
+	const amount = parseFloat(document.getElementById('expenseAmount').value);
+	if (!desc || isNaN(amount)) return;
+	
+	const data = JSON.parse(localStorage.getItem('expenses_data')) || [];
+	data.push({ desc, amount });
+	localStorage.setItem('expenses_data', JSON.stringify(data));
+	
+	document.getElementById('expenseDesc').value = '';
+	document.getElementById('expenseAmount').value = '';
+	loadExpenses();
+	}
+	
+	function loadExpenses() {
+	const list = document.getElementById('expenseList');
+	const total = document.getElementById('expenseTotal');
+	const data = JSON.parse(localStorage.getItem('expenses_data')) || [];
+	
+	list.innerHTML = '';
+	let sum = 0;
+	
+	data.forEach((entry, index) => {
+		sum += entry.amount;
+		const li = document.createElement('li');
+		li.innerHTML = `
+		<span>${entry.desc}: ₱${entry.amount.toFixed(2)}</span>
+		<button class="delete" onclick="deleteExpense(${index})">✖</button>
+		`;
+		list.appendChild(li);
+	});
+	
+	total.textContent = sum.toFixed(2);
+	}
+	
+	function deleteExpense(index) {
+	let data = JSON.parse(localStorage.getItem('expenses_data')) || [];
+	data.splice(index, 1);
+	localStorage.setItem('expenses_data', JSON.stringify(data));
+	loadExpenses();
+	}
+	
+	window.addEventListener('click', function(event) {
+		const modals = ['workTasksModal', 'houseTasksModal', 'expenseModal'];
+		modals.forEach(id => {
+		const modal = document.getElementById(id);
+		if (event.target === modal) {
+			modal.style.display = 'none';
+		}
+		});
+	});
+	
+	const btnWork = document.getElementById("btn-work");
+	const btnHouse = document.getElementById("btn-house");
+	const btnExpense = document.getElementById("btn-expense");
+	const btnLifeLog = document.getElementById("btn-lifelog");
+	
+	if (btnWork && btnHouse && btnExpense && btnLifeLog) {
+	btnWork.onclick = () => openModal('workTasksModal');
+	btnHouse.onclick = () => openModal('houseTasksModal');
+	btnExpense.onclick = () => openModal('expenseModal');
+	btnLifeLog.onclick = () => openModal('lifelog-modal');
+	} else {
+	console.error("Buttons not found in DOM. Check IDs or script placement.");
+	}
+
+	</script>
+	
+	<script>
+	function styleStatusDropdown(select) {
+		const status = select.value;
+		if (status === "Completed") {
+		select.style.backgroundColor = "#2ecc71"; // Green
+		select.style.color = "#fff";
+		} else if (status === "In Progress") {
+		select.style.backgroundColor = "#f39c12"; // Orange
+		select.style.color = "#000";
+		} else {
+		select.style.backgroundColor = "";
+		select.style.color = "";
+		}
+	}
+	</script>
+	
+	<script>
+	document.addEventListener("DOMContentLoaded", () => {
+	carryOverTasks('work');
+	carryOverTasks('house');
+	});
+	
+	function carryOverTasks(type) {
+	const todayKey = getTodayKey(type);
+	
+	// Get today's tasks (if any)
+	const todayTasks = JSON.parse(localStorage.getItem(todayKey)) || [];
+	
+	// Look at yesterday's tasks
+	const yesterday = new Date();
+	yesterday.setDate(yesterday.getDate() - 1);
+	const yesterdayKey = `${type}_tasks_${yesterday.toISOString().split('T')[0]}`;
+	const oldTasks = JSON.parse(localStorage.getItem(yesterdayKey)) || [];
+	
+	const unfinished = oldTasks.filter(t => t.status !== "Completed");
+	
+	// Avoid duplicates: Only add if not in today's task list
+	const updatedTasks = [...todayTasks];
+	
+	unfinished.forEach(t => {
+		const alreadyExists = todayTasks.some(existing => existing.task === t.task && existing.status === t.status);
+		if (!alreadyExists) updatedTasks.push(t);
+	});
+	
+	// Save merged tasks to today's key
+	localStorage.setItem(todayKey, JSON.stringify(updatedTasks));
+	}
+	</script>
+	
+	<script>
+	setInterval(() => {
+		location.reload();
+	}, 60000); // 
+	</script>
+
+	<script>
+		window.onload = () => {
+		const today = new Date().toDateString(); // For gratitude
+		const todayISO = new Date().toISOString().split("T")[0]; // For work, house, and expense
+		
+		// === WORK TASKS ===
+		const savedWorkTasks = JSON.parse(localStorage.getItem(`work_tasks_${todayISO}`)) || [];
+		savedWorkTasks.forEach(task => displayTask('work', task));
+		
+		// === HOUSE TASKS ===
+		const savedHouseTasks = JSON.parse(localStorage.getItem(`house_tasks_${todayISO}`)) || [];
+		savedHouseTasks.forEach(task => displayTask('house', task));
+		
+		// === EXPENSE ITEMS ===
+		const savedExpenses = JSON.parse(localStorage.getItem(`expense_tasks_${todayISO}`)) || [];
+		savedExpenses.forEach(task => displayTask('expense', task));
+		
+		// === GRATITUDE ENTRIES ===
+		const allGratitude = JSON.parse(localStorage.getItem("gratitudeEntries")) || [];
+		const todaysEntries = allGratitude.filter(e => new Date(e.time).toDateString() === today);
+		todaysEntries.forEach(entry => addListItem(entry)); // Render visible list
+		showPrevious(allGratitude); // Show 9 most recent from past 7 days
+		
+		// === LIFE LOG ENTRIES ===
+		renderLifeLog(); // ✅ Now added
+		};
+
+	</script>
+	
+	<script>
+	// === Life Log Modal ===
+	document.addEventListener("DOMContentLoaded", () => {
+		const btnLifeLog = document.getElementById('btn-lifelog');
+		const lifeLogModal = document.getElementById('lifelog-modal');
+		const lifeLogInput = document.getElementById('lifelog-input');
+		const lifeLogDate = document.getElementById('lifelog-date');
+		const lifeLogSave = document.getElementById('lifelog-save');
+		const lifeLogList = document.getElementById('lifelog-list');
+	
+		// Save button
+		lifeLogSave.addEventListener('click', () => {
+			const desc = lifeLogInput.value.trim();
+			const date = lifeLogDate.value;
+	
+			if (!desc || !date) return;
+	
+			const entries = JSON.parse(localStorage.getItem('lifeLog') || '[]');
+			entries.push({ desc, date });
+			localStorage.setItem('lifeLog', JSON.stringify(entries));
+			lifeLogInput.value = '';
+			lifeLogDate.value = '';
+			renderLifeLog();
+		});
+	
+		// Render entries
+		function renderLifeLog() {
+			const entries = JSON.parse(localStorage.getItem('lifeLog') || '[]');
+			lifeLogList.innerHTML = entries.map((entry, i) => {
+				const daysAgo = Math.floor((Date.now() - new Date(entry.date)) / (1000 * 60 * 60 * 24));
+				return `
+					<div style="margin-bottom: 10px;">
+						<strong>${entry.desc}</strong> — ${entry.date} (${daysAgo} days ago)
+						<button onclick="deleteLifeLog(${i})">✖</button>
+					</div>
+				`;
+			}).join('');
+		}
+	
+		// Expose delete function globally
+		window.deleteLifeLog = function(index) {
+			const entries = JSON.parse(localStorage.getItem('lifeLog') || '[]');
+			entries.splice(index, 1);
+			localStorage.setItem('lifeLog', JSON.stringify(entries));
+			renderLifeLog();
+		};
+	
+		// Close modal on outside click
+		window.addEventListener('click', (e) => {
+			if (e.target === lifeLogModal) {
+				lifeLogModal.style.display = 'none';
+			}
+		});
+	
+		// Initial render when modal is opened
+		window.loadLifeLog = renderLifeLog;
+	});
+	</script>
+
+
+
+<!-- ✅ Firebase SDKs (must come first) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<!-- ✅ Firebase Initialization -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAsWTcPPG7ZD_9866eYvPqJ-CbwLKk_DVs",
+    authDomain: "yowjin-e22e8.firebaseapp.com",
+    projectId: "yowjin-e22e8",
+    storageBucket: "yowjin-e22e8.appspot.com",
+    messagingSenderId: "634707370349",
+    appId: "1:634707370349:web:6c207690ad897638103a64"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  window.db = db;
+</script>
+
+<!-- ✅ Migration Function -->
+<script>
+  window.migrateLocalDataToFirestore = function () {
+    const uid = "demoUser";
+
+    const gratitudeEntries = JSON.parse(localStorage.getItem("gratitudeEntries") || "[]");
+    gratitudeEntries.forEach(entry => {
+      db.collection("users").doc(uid).collection("gratitude").add(entry);
+    });
+
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith("work_tasks_") || key.startsWith("house_tasks_")) {
+        const type = key.startsWith("work") ? "work" : "house";
+        const date = key.split("_tasks_")[1];
+        const tasks = JSON.parse(localStorage.getItem(key) || "[]");
+        tasks.forEach(task => {
+          db.collection("users").doc(uid).collection(`${type}_tasks`).add({
+            ...task,
+            date: date
+          });
+        });
+      }
+    });
+
+    const expenses = JSON.parse(localStorage.getItem("expenses_data") || "[]");
+    expenses.forEach(entry => {
+      db.collection("users").doc(uid).collection("expenses").add(entry);
+    });
+
+    const lifeLog = JSON.parse(localStorage.getItem("lifeLog") || "[]");
+    lifeLog.forEach(entry => {
+      db.collection("users").doc(uid).collection("lifeLog").add(entry);
+    });
+
+    alert("✅ Migration complete!");
+  };
+</script>
+
+<!-- ✅ Auto-run Migration Once -->
+<script>
+  window.onload = function () {
+    if (!localStorage.getItem("firebaseMigrated")) {
+      migrateLocalDataToFirestore();
+      localStorage.setItem("firebaseMigrated", "true");
+    }
+  };
+</script>
+
+
+
+
+
+</body>
+</html>
